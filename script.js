@@ -29,7 +29,7 @@ function loginWithGoogle() {
         document.getElementById("app-container").style.display = "block";
         document.getElementById("login-container").style.display = "none";
       } else {
-        alert("Nie masz dostępu do tej aplikacji.");
+        alert("You do not have access to this application.");
         auth.signOut();
       }
     })
