@@ -236,3 +236,29 @@ nav {
     #grouped-expense-list > ul > li{
         padding: .3rem;
     }
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none; /* optional: remove bullets */
+      }
+      
+      li {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        margin-bottom: 0.5rem;
+      }
+      
+      /* The text (span) can flex to take up remaining space */
+      li span {
+        flex: 1;
+      }
+      
+      /* Optional spacing for checkbox and button */
+      li input[type="checkbox"] {
+        margin: 0 1rem;
+      }
+      li button {
+        /* or .btn-sm if using Bootstrap classes */
+        margin-left: 1rem;
+      }
