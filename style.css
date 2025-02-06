@@ -6,7 +6,11 @@
 
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #ffffff ;
+    background-color: #000000 ;
+}
+
+h1 {
+  color: #fff;
 }
 
 h2 {
@@ -20,15 +24,20 @@ h2 {
   margin: 0 auto;
   height: 100vh;
   display: flex;
-  flex-direction: column;
   padding: 0 20px;
   justify-content: center;
   align-items: center;
-  position: relative; /* Required for positioning the pseudo-element */
-  overflow: hidden; /* Prevents blur overflow */
+ 
 }
 
-#login-container::before {
+.login-bg {
+  width: 50%;
+ position: relative; /* Required for positioning the pseudo-element */
+ overflow: hidden; /* Prevents blur overflow */
+ height: 100%;
+}
+
+.login-bg::before {
   content: '';
   position: absolute;
   top: 0;
@@ -38,17 +47,15 @@ h2 {
   background-image: url('images/pexels-liza-summer-6347720.jpg');
   background-size: cover;
   background-position: center;
-  filter: blur(8px); /* Apply the blur here */
+  filter: blur(4px); /* Apply the blur here */
   z-index: -1; /* Place it behind the content */
 }
 
 
 .login-frame {
-    max-width: 400px;
+    width: 50%;
     padding: 3rem;
-    background-color: #fff;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -56,14 +63,41 @@ h2 {
 
 }
 
-button {
-    width: 12rem;
-    padding: .7rem;
-    background-color: #2b5f2b;
-    color: #fff;
-    border: 1px spolid #121612;
-    border-radius: 15px;
-    cursor: pointer;
+.google-button {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(to right, #333, #222);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  color: white;
+  text-decoration: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s, box-shadow 0.3s;
+  width: 260px;
+  justify-content: center;
+}
+
+.google-button i {
+  font-size: 18px;
+  margin-right: 10px;
+  color: #fff;
+}
+
+.google-button:hover {
+  background: linear-gradient(to right, #444, #333);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+}
+
+.login-header {
+  width: 330px;
+  padding: 0 25px;
+}
+
+.login-header h1 {
+  text-align: left;
 }
 
 #app-container {
@@ -174,6 +208,10 @@ nav {
     @media screen and (max-width: 768px) {
         .main-container{
         padding: 20px;
+        }
+
+        .login-bg {
+          display: none;
         }
     
         .nav-container {
