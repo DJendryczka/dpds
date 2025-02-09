@@ -14,6 +14,7 @@ h1 {
 }
 
 h2 {
+  color: #ffffff;
     font-size: 1.5rem;
     margin-bottom: 1rem;
     font-weight: 700;
@@ -106,7 +107,13 @@ h2 {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: beige;
+    background-color: #010101;
+}
+.form-label {
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: .5rem;
 }
 
 /* NAVIGATION */
@@ -285,6 +292,7 @@ nav {
         align-items: center;
         justify-content: flex-start;
         margin-bottom: 0.5rem;
+        color: #ffffff;
       }
       
       /* The text (span) can flex to take up remaining space */
