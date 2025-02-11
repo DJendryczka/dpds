@@ -63,7 +63,14 @@
             <h1 class="mt-5 pt-5">Welcome to HomeBudget</h1>
             <div class="container mt-5">
               <div class="row">
+                <div id="month-selector-container" class="mb-3">
+                  <label for="month-selector" class="form-label"
+                    >Select Month:</label
+                  >
+                  <select id="month-selector" class="form-select"></select>
+                </div>
                 <div class="col-12 col-md-6 p-3">
+                  
                   <h2>Add an Expense</h2>
                   <form id="expense-form">
                     <div class="mb-3">
@@ -90,6 +97,11 @@
                       Add Expense
                     </button>
                   </form>
+                  <h2 class="my-3">Expnse List</h2>
+                  <div id="grouped-expense-list"></div>
+                  <div id="grouped-expense-container" class="">
+                    <div id="grouped-expense-list" class="m-2"></div>
+                  </div>
                 </div>
                 <!-- Add Income Section -->
                 <div class="col-12 col-md-6 p-3">
@@ -121,25 +133,8 @@
                       Add Income
                     </button>
                   </form>
-                </div>
-              </div>
-
-              <div class="col-12 col-md-6 p-3">
-                <h2>Income List</h2>
-                <div id="income-list"></div>
-              </div>
-
-              <div class="col-12 col-md-6 p-3">
-                <div id="month-selector-container" class="mb-3">
-                  <label for="month-selector" class="form-label"
-                    >Select Month:</label
-                  >
-                  <select id="month-selector" class="form-select"></select>
-                </div>
-
-                <div id="grouped-expense-list"></div>
-                <div id="grouped-expense-container" class="">
-                  <div id="grouped-expense-list" class="m-2"></div>
+                  <h2 class="my-3">Income List</h2>
+                  <div id="income-list"></div>
                 </div>
               </div>
             </div>

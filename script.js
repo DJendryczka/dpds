@@ -343,19 +343,22 @@ async function togglePaid(expenseId, newValue) {
 // --------------------
 // 10) DELETE EXPENSE (unchanged)
 // --------------------
-async function deleteIncome(incomeId) {
+// Example of a correct definition:
+async function deleteExpense(expenseId) {
   const user = auth.currentUser;
   if (!user) return;
 
   try {
-    const ref = doc(db, "users", user.uid, "incomes", incomeId);
+    const ref = doc(db, 'users', user.uid, 'expenses', expenseId);
     await deleteDoc(ref);
-    console.log("Deleted income with ID:", incomeId);
-    loadIncomes(); // Reload incomes after deletion
+    console.log('Deleted expense with ID:', expenseId);
+    // reload expenses
+    loadExpenses();
   } catch (error) {
-    console.error("Error deleting income:", error);
+    console.error('Error deleting expense:', error);
   }
 }
+
 
 
 // Add Income Functionality
