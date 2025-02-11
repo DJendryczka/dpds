@@ -39,6 +39,8 @@ let currentGroupedExpenses = {};
 // 1) LOGIN/LOGOUT (unchanged)
 // --------------------
 function loginWithGoogle() {
+
+  showSpinner();
   signInWithPopup(auth, provider)
     .then((result) => {
       const user = result.user;
@@ -56,6 +58,9 @@ function loginWithGoogle() {
     })
     .catch((error) => {
       console.error("Error during login:", error.message);
+    })
+    .finally(() => {
+      hideSpinner(); // <-- Hide spinner regardless of success or error
     });
 }
 
@@ -126,6 +131,7 @@ document.getElementById("expense-form").addEventListener("submit", async (e) => 
 // 4) LOAD & GROUP EXPENSES 
 // --------------------
 async function loadExpenses() {
+  showSpinner();
   const user = auth.currentUser;
   if (!user) return;
 
@@ -147,6 +153,8 @@ async function loadExpenses() {
     renderGroupedExpenses(grouped);
   } catch (error) {
     console.error("Error loading expenses:", error);
+  } finally {
+    hideSpinner(); // <-- Hide spinner regardless of success or error
   }
 }
 
@@ -387,6 +395,7 @@ document.getElementById("income-form").addEventListener("submit", async (e) => {
 
 
 async function loadIncomes() {
+  showSpinner();
   const user = auth.currentUser;
   if (!user) return;
 
@@ -403,6 +412,8 @@ async function loadIncomes() {
     renderGroupedIncomes(grouped);
   } catch (error) {
     console.error("Error loading incomes:", error);
+  } finally {
+    hideSpinner(); // <-- Hide spinner regardless of success or error
   }
 }
 
@@ -492,6 +503,21 @@ function renderGroupedIncomes(grouped) {
     container.textContent = "No incomes found for the selected month.";
   }
 }
+
+function showSpinner() {
+  const spinnerOverlay = document.getElementById("spinner-overlay");
+  if (spinnerOverlay) {
+    spinnerOverlay.style.display = "flex"; 
+  }
+}
+
+function hideSpinner() {
+  const spinnerOverlay = document.getElementById("spinner-overlay");
+  if (spinnerOverlay) {
+    spinnerOverlay.style.display = "none"; 
+  }
+}
+
 
 document.getElementById("month-selector").addEventListener("change", () => {
   renderGroupedExpenses(currentGroupedExpenses);

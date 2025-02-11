@@ -116,6 +116,37 @@ h2 {
     margin-bottom: .5rem;
 }
 
+/* Overlay that covers entire screen */
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5); /* semi-transparent black overlay */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* should be on top of everything */
+}
+
+/* Actual spinner */
+.spinner {
+  width: 70px;
+  height: 70px;
+  border: 8px solid #ffffff; /* light color */
+  border-top: 8px solid #FD7E14; /* accent color for the spinning part */
+  border-radius: 50%;
+  animation: spin 1s linear infinite; 
+}
+
+/* The spin animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
 /* NAVIGATION */
 
 nav {
