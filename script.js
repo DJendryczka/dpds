@@ -223,7 +223,7 @@ if (monthSelectorEl) {
 }
 
 /***********************************************************
-  7) RENDER EXPENSES
+  7) RENDER EXPENSES (with a btn-group for Edit/Delete)
 ************************************************************/
 function renderGroupedExpenses(grouped) {
   const container = document.getElementById("grouped-expense-list");
@@ -287,21 +287,28 @@ function renderGroupedExpenses(grouped) {
 
     // Actions
     const actionsTd = document.createElement("td");
-    // Edit
+    // Create a .btn-group container to keep Edit/Delete side by side
+    const buttonGroup = document.createElement("div");
+    buttonGroup.classList.add("btn-group", "btn-group-sm"); // small horizontal group
+
+    // Edit button
     const editBtn = document.createElement("button");
     editBtn.textContent = "Edit";
-    editBtn.classList.add("btn", "btn-warning", "btn-sm", "me-2");
+    editBtn.classList.add("btn", "btn-warning");
     editBtn.addEventListener("click", () => openEditExpenseModal(expense));
-    actionsTd.appendChild(editBtn);
+    buttonGroup.appendChild(editBtn);
 
-    // Delete
+    // Delete button
     const delBtn = document.createElement("button");
     delBtn.textContent = "Delete";
-    delBtn.classList.add("btn", "btn-danger", "btn-sm");
+    delBtn.classList.add("btn", "btn-danger");
     delBtn.addEventListener("click", () => deleteExpense(expense.id));
-    actionsTd.appendChild(delBtn);
+    buttonGroup.appendChild(delBtn);
 
+    // Put the group in the Actions cell
+    actionsTd.appendChild(buttonGroup);
     tr.appendChild(actionsTd);
+
     tbody.appendChild(tr);
   });
   table.appendChild(tbody);
@@ -420,7 +427,7 @@ document
   });
 
 /***********************************************************
-  13) LOAD & RENDER INCOMES
+  13) LOAD & RENDER INCOMES (with btn-group as well)
 ************************************************************/
 async function loadIncomes() {
   showSpinner();
@@ -507,20 +514,25 @@ function renderGroupedIncomes(grouped) {
     // Actions (Edit + Delete)
     const actionsTd = document.createElement("td");
 
+    // Create a .btn-group for Income as well
+    const buttonGroup = document.createElement("div");
+    buttonGroup.classList.add("btn-group", "btn-group-sm");
+
     // Edit
     const editBtn = document.createElement("button");
     editBtn.textContent = "Edit";
-    editBtn.classList.add("btn", "btn-warning", "btn-sm", "me-2");
+    editBtn.classList.add("btn", "btn-warning");
     editBtn.addEventListener("click", () => openEditIncomeModal(income));
-    actionsTd.appendChild(editBtn);
+    buttonGroup.appendChild(editBtn);
 
     // Delete
     const delBtn = document.createElement("button");
     delBtn.textContent = "Delete";
-    delBtn.classList.add("btn", "btn-danger", "btn-sm");
+    delBtn.classList.add("btn", "btn-danger");
     delBtn.addEventListener("click", () => deleteIncome(income.id));
-    actionsTd.appendChild(delBtn);
+    buttonGroup.appendChild(delBtn);
 
+    actionsTd.appendChild(buttonGroup);
     tr.appendChild(actionsTd);
     tbody.appendChild(tr);
   });
