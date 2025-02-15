@@ -41,6 +41,7 @@ const provider = new GoogleAuthProvider();
 let currentGroupedExpenses = {}; // For storing grouped expenses
 let editingExpenseId = null;
 let editingIncomeId = null;
+let balanceChart = null; // Global Chart instance
 
 // Grab references to the two modals
 const editExpenseModalEl = document.getElementById("editExpenseModal");
@@ -49,6 +50,15 @@ const editIncomeModalEl = document.getElementById("editIncomeModal");
 // Turn them into Bootstrap modal instances
 const editExpenseModal = new bootstrap.Modal(editExpenseModalEl);
 const editIncomeModal = new bootstrap.Modal(editIncomeModalEl);
+
+/***********************************************************
+  Helper Function: Get Current Month
+  Returns a string in the format "YYYY-MM" (e.g., "2025-02")
+************************************************************/
+function getCurrentMonth() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+}
 
 /***********************************************************
   2) LOGIN / LOGOUT
@@ -68,6 +78,7 @@ function loginWithGoogle() {
         // Load data
         loadExpenses();
         loadIncomes();
+        loadBalanceChart();
       } else {
         alert("You do not have access to this application.");
         auth.signOut();
@@ -193,10 +204,16 @@ function populateMonthSelector(grouped) {
   const monthSelector = document.getElementById("month-selector");
   if (!monthSelector) return;
 
-  const oldValue = monthSelector.value;
-  monthSelector.innerHTML = "";
+  const currentMonth = getCurrentMonth();
+  // Create a set of months from the grouped data and include the current month
+  const monthsSet = new Set(Object.keys(grouped));
+  monthsSet.add(currentMonth);
 
-  const months = Object.keys(grouped).sort().reverse();
+  // Convert to array and sort (descending so that the latest months appear first)
+  const months = Array.from(monthsSet).sort().reverse();
+
+  // Clear any existing options and populate new ones
+  monthSelector.innerHTML = "";
   months.forEach((m) => {
     const option = document.createElement("option");
     option.value = m;
@@ -204,14 +221,8 @@ function populateMonthSelector(grouped) {
     monthSelector.appendChild(option);
   });
 
-  // Re-select if possible
-  if (oldValue && months.includes(oldValue)) {
-    monthSelector.value = oldValue;
-  } else if (months.length > 0) {
-    const now = new Date();
-    const current = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-    monthSelector.value = months.includes(current) ? current : months[0];
-  }
+  // Set the default selection to the current month
+  monthSelector.value = currentMonth;
 }
 
 const monthSelectorEl = document.getElementById("month-selector");
@@ -219,6 +230,7 @@ if (monthSelectorEl) {
   monthSelectorEl.addEventListener("change", () => {
     renderGroupedExpenses(currentGroupedExpenses);
     loadIncomes(); // refresh incomes too
+    loadBalanceChart(); // refresh balance chart for the selected month
   });
 }
 
@@ -609,3 +621,89 @@ function hideSpinner() {
   const overlay = document.getElementById("spinner-overlay");
   if (overlay) overlay.style.display = "none";
 }
+
+/***********************************************************
+  17) LOAD BALANCE CHART
+************************************************************/
+async function loadBalanceChart() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const monthSelector = document.getElementById("month-selector");
+  const selectedMonth =
+    monthSelector && monthSelector.value ? monthSelector.value : getCurrentMonth();
+  console.log("📅 Selected Month:", selectedMonth);
+
+  const incomesRef = collection(db, "users", user.uid, "incomes");
+  const expensesRef = collection(db, "users", user.uid, "expenses");
+
+  try {
+      const incomeSnapshot = await getDocs(incomesRef);
+      const expenseSnapshot = await getDocs(expensesRef);
+
+      // Filter incomes & expenses to include only selected month
+      const totalIncome = incomeSnapshot.docs
+          .filter(doc => isSameMonth(doc.data().createdAt, selectedMonth))
+          .reduce((sum, doc) => sum + doc.data().amount, 0);
+
+      const totalExpenses = expenseSnapshot.docs
+          .filter(doc => isSameMonth(doc.data().createdAt, selectedMonth))
+          .reduce((sum, doc) => sum + doc.data().amount, 0);
+
+      const balance = totalIncome - totalExpenses;
+
+      console.log("💰 Total Income (Filtered):", totalIncome);
+      console.log("💸 Total Expenses (Filtered):", totalExpenses);
+      console.log("📊 Balance (Filtered):", balance);
+
+      renderBalanceChart(totalIncome, totalExpenses, balance, selectedMonth);
+  } catch (error) {
+      console.error("⚠️ Error loading balance data:", error);
+  }
+}
+
+// Helper function to check if a date is in the selected month
+function isSameMonth(timestamp, selectedMonth) {
+  let dateObj = timestamp?.toDate ? timestamp.toDate() : new Date(timestamp);
+  const y = dateObj.getFullYear();
+  const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+  return `${y}-${m}` === selectedMonth;
+}
+
+function renderBalanceChart(totalIncome, totalExpenses, balance, selectedMonth) {
+  const ctx = document.getElementById("balanceChart").getContext("2d");
+
+  // Destroy previous chart instance if it exists
+  if (balanceChart) {
+    balanceChart.destroy();
+  }
+
+  balanceChart = new Chart(ctx, {
+      type: "bar",  // You can change to "pie", "doughnut", "line"
+      data: {
+          labels: ["Income", "Expenses", "Balance"],
+          datasets: [{
+              label: `Financial Overview for ${selectedMonth}`,
+              data: [totalIncome, totalExpenses, balance],
+              backgroundColor: ["#28a745", "#dc3545", "#007bff"], // Green, Red, Blue
+          }]
+      },
+      options: {
+          responsive: true,
+          plugins: {
+              legend: { display: false },
+              title: { display: true, text: `Income vs Expenses - ${selectedMonth}` }
+          },
+          scales: {
+              y: { beginAtZero: true }
+          }
+      }
+  });
+}
+
+// Call this function after user logs in
+document.addEventListener("DOMContentLoaded", () => {
+  loadBalanceChart();
+});
+
+console.log("Chart.js version:", Chart.version);
